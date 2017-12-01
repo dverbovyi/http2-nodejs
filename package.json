@@ -1,8 +1,7 @@
 {
-  "name": "h2-express",
+  "name": "http2 test",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "# http vs http2 resource load time test",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,40 +1,43 @@
-const http2 = require('spdy')
-const logger = require('morgan')
-const express = require('express')
-const app = express()
-const fs = require('fs')
+const http2 = require('spdy');
+const http1_1 = require('http');
+const express = require('express');
+const app = express();
+const fs = require('fs');
+const path = require('path');
 
-app.use(logger('dev'))
+app.use('/', express.static(path.join(__dirname, '/dist')));
 
 app.get('/', (req, res) => {
-    res.send(`hello, http2!
-go to /pushy`)
-})
+    res.sendFile('dist/index.html', { root: __dirname });
+});
 
-app.get('/pushy', (req, res) => {
-    var stream = res.push('/main.js', {
-        status: 200, // optional
-        method: 'GET', // optional
-        request: {
-            accept: '*/*'
-        },
-        response: {
-            'content-type': 'application/javascript'
-        }
-    });
-    stream.on('error', () => {});
-    stream.end('alert("hello from push stream!");');
-    res.end('<script src="/main.js"></script>');
-})
-
-var options = {
+const options = {
     key: fs.readFileSync('./server.key'),
     cert: fs.readFileSync('./server.crt')
 }
+
+const HTTPS_PORT = 443;
+
+const log = port => {
+    const ending = port === HTTPS ? 's' : '';
+
+ return  `
+    server is listening on http${ending}://localhost:${port}.
+    You can open the URL in the browser.`
+};
+
 http2
     .createServer(options, app)
-    .listen(8080, () => {
-        console.log(`Server is listening on https://localhost:8080.
-You can open the URL in the browser.`)
+    .listen(HTTPS, () => {
+        console.log(log(HTTPS));
     }
-    )
+)
+
+const HTTP_PORT = 80;
+
+http1_1
+    .createServer(app)
+    .listen(HTTP, () => {
+        console.log(log(HTTP));
+    }
+)

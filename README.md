@@ -1,2 +1,2 @@
-# http2-nodejs
-HTTP2 with Nodejs test example with Server-Push stream
+# http vs http2 resource load time test
+
