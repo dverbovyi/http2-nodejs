@@ -38,5 +38,3 @@ http2
 You can open the URL in the browser.`)
     }
     )
-
-    var io = require('socket.io')(http2);
